@@ -8,10 +8,24 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/joho/godotenv"
 )
 
+func goDotEnvVariable(key string) string {
+
+	// load .env file
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
+	return os.Getenv(key)
+}
+
 func main() {
-	sess, err := discordgo.New("Bot MTEyNzU0MDEyMzYzMDg1MDEyOA.GshaRg.LhZ-FFoXprCJS4jQWWgApRdBeiKiBAdRGMVjzc")
+	discordToken := goDotEnvVariable("DISCORD_TOKEN")
+	sess, err := discordgo.New(discordToken)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +44,6 @@ func main() {
 					},
 				},
 			}
-
 			_, err := s.ChannelMessageSendComplex(m.ChannelID, msg)
 			if err != nil {
 				log.Println("Failed to send message with image:", err)
